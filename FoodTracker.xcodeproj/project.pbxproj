@@ -15,6 +15,7 @@
 		7E0E32611A63536700CDA896 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E0E325F1A63536700CDA896 /* LaunchScreen.xib */; };
 		7E0E326D1A63536700CDA896 /* FoodTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E326C1A63536700CDA896 /* FoodTrackerTests.swift */; };
 		7E0E32771A63541100CDA896 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E32761A63541100CDA896 /* DetailViewController.swift */; };
+		7E0E32791A661FFA00CDA896 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E32781A661FFA00CDA896 /* DataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		7E0E326B1A63536700CDA896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E0E326C1A63536700CDA896 /* FoodTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTrackerTests.swift; sourceTree = "<group>"; };
 		7E0E32761A63541100CDA896 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		7E0E32781A661FFA00CDA896 /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 			children = (
 				7E0E32531A63536700CDA896 /* AppDelegate.swift */,
 				7E0E32581A63536700CDA896 /* ViewController.swift */,
+				7E0E32781A661FFA00CDA896 /* DataController.swift */,
 				7E0E32761A63541100CDA896 /* DetailViewController.swift */,
 				7E0E325A1A63536700CDA896 /* Main.storyboard */,
 				7E0E325D1A63536700CDA896 /* Images.xcassets */,
@@ -218,6 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E0E32791A661FFA00CDA896 /* DataController.swift in Sources */,
 				7E0E32591A63536700CDA896 /* ViewController.swift in Sources */,
 				7E0E32571A63536700CDA896 /* FoodTracker.xcdatamodeld in Sources */,
 				7E0E32541A63536700CDA896 /* AppDelegate.swift in Sources */,
