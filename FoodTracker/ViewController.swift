@@ -131,12 +131,48 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         else{ //third tab (saved)
             return 0
         }
+   
+    }
+    
+    
+    
+    
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
+        let selectedScopeButtonIndex = self.searchController.searchBar.selectedScopeButtonIndex
         
-        
-        
+        if selectedScopeButtonIndex == 0 {
+            var searchFoodName:String
+            
+            if self.searchController.active{
+                searchFoodName = filteredSuggestedSearchFoods[indexPath.row] //finds button you just clicked on
+            }else{
+                searchFoodName = suggestedSearchFoods[indexPath.row]
+            }
+            self.searchController.searchBar.selectedScopeButtonIndex = 1
+            makeRequest(searchFoodName)
+        }
+        else if selectedScopeButtonIndex == 1 {
+            
+        }
+        else if selectedScopeButtonIndex == 2 {
+            
+        }
         
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     //UISearchBarDelegate
@@ -147,6 +183,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.searchController.searchBar.selectedScopeButtonIndex = 1 // automatically changes to 2nd tab
         
         makeRequest(searchBar.text)
+    }
+    
+    
+    
+    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) { //if selected scope (tab is change)
+        self.tableView.reloadData()
     }
 
     
