@@ -7,13 +7,13 @@
 //
 
 import UIKit
-
+import CoreData
 
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating {
     
     
-    
+    var usdaItem:USDAItem?
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -30,7 +30,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var apiSearchForFoods:[(name:String, idValue:String)] = []
     
+    var favouritedUSDAItems:[USDAItem] = []
+    
+    var filteredFavouritedUSDAItems:[USDAItem] = []
+    
+    
+    
     var jsonResponce:NSDictionary!
+    
+    var dataController = DataController()
+    
+    
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +75,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         
     }
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "toDetailVCSegue" {
+            if sender != nil{
+                var detailVC = segue.destinationViewController as DetailViewController
+                detailVC.usdaItem = sender as? USDAItem
+            }
+        }
+    }
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -91,8 +116,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             foodName = apiSearchForFoods[indexPath.row].name
             
         }
-        else{
-            foodName = ""
+        else{ //favourited tab
+            
+            if self.searchController.active {
+                foodName = self.filteredFavouritedUSDAItems[indexPath.row].name
+            }
+            else{
+                foodName = self.favouritedUSDAItems[indexPath.row].name
+            }
+            
+            
+        
         }
         
         cell.textLabel?.text = foodName
@@ -129,7 +163,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             return apiSearchForFoods.count
         }
         else{ //third tab (saved)
-            return 0
+            
+            if self.searchController.active {
+                return filteredFavouritedUSDAItems.count
+            }
+            else{
+                return favouritedUSDAItems.count
+            }
+            
+            
         }
    
     }
@@ -155,8 +197,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         else if selectedScopeButtonIndex == 1 {
             
+            //when clicked, save into coredata
+            
+            self.performSegueWithIdentifier("toDetailVCSegue", sender: nil)
+            
+            
+            let idValue = apiSearchForFoods[indexPath.row].idValue
+            self.dataController.saveUSDAItemsForId(idValue, json: self.jsonResponce)
+            
         }
-        else if selectedScopeButtonIndex == 2 {
+        else if selectedScopeButtonIndex == 2 { // saved tab
+            
+            if  searchController.active {
+                let usdaItem = filteredFavouritedUSDAItems[indexPath.row]
+                self.performSegueWithIdentifier("toDetailVCSegue", sender: usdaItem) //sender allows us to access this attribute easily in prepareForSegue func
+            }
+            else{
+                let usdaItem = favouritedUSDAItems[indexPath.row]
+                self.performSegueWithIdentifier("toDetailVCSegue", sender: usdaItem)
+            }
             
         }
         
@@ -188,6 +247,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) { //if selected scope (tab is change)
+        
+        if selectedScope == 2{
+            requestFavouritedUSDAItems() //when the tabs are switch, fetch the new items
+        }
+        
         self.tableView.reloadData()
     }
 
@@ -221,10 +285,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // this uses a filter function to go through each item in the list and see if it meets the search filter, adds it to the filtered list if applicable.
         
-        self.filteredSuggestedSearchFoods = self.suggestedSearchFoods.filter({ (food:String) -> Bool in // iterates each element as 'food', return true or false for each
-            var foodMatch = food.rangeOfString(searchText)
-            return foodMatch != nil
-        })
+        
+        if scope == 0 { // first tab
+            
+            
+            self.filteredSuggestedSearchFoods = self.suggestedSearchFoods.filter({ (food:String) -> Bool in // iterates each element as 'food', return true or false for each if stringmatch is found
+                var foodMatch = food.rangeOfString(searchText)
+                return foodMatch != nil
+            })
+        }
+        else if scope == 2{ //favourited tab
+            
+            
+            self.filteredFavouritedUSDAItems = self.favouritedUSDAItems.filter({ (item:USDAItem) -> Bool in
+                var stringMatch = item.name.rangeOfString(searchText)
+                return stringMatch != nil
+            })
+        }
+        
+        
     }
     
     
@@ -276,7 +355,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             var error: NSError?
             
             var jsonDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableLeaves, error: &error) as? NSDictionary
-            println(jsonDictionary)
+            //println(jsonDictionary)
             
             if error != nil{
                 println(error?.localizedDescription)
@@ -319,9 +398,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     
+    // COREDATA SETUP
     
     
     
+    
+    func requestFavouritedUSDAItems(){
+        
+        let fetchRequest = NSFetchRequest(entityName: "USDAItem")
+        let appDelegate = (UIApplication.sharedApplication().delegate as AppDelegate)
+        let managedObjectContext = appDelegate.managedObjectContext
+        self.favouritedUSDAItems = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as [USDAItem] //retuns an array of all the returned objects
+        
+        
+    }
     
     
     

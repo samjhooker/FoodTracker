@@ -10,6 +10,9 @@ import Foundation
 import UIKit
 import CoreData
 
+
+let kUSDAItemCompleted = "thisIsRandomText"
+
 class DataController{
     
     
@@ -86,6 +89,7 @@ class DataController{
                     
                     if items?.count != 0 {
                         //the item is already saved
+                        println("this item was already saved")
                         return
                     }else{
                         //havnt yet saved in coredata
@@ -210,6 +214,9 @@ class DataController{
                                 //saves everything to core data
                                 (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
                                 
+                                
+                                //this send out a radio message, post notifications which the wntire project can recieve and use
+                                NSNotificationCenter.defaultCenter().postNotificationName(kUSDAItemCompleted, object: usdaItem)
                                 
                             }
                         }
