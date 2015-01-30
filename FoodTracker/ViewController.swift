@@ -74,6 +74,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.suggestedSearchFoods = ["apple", "bagel", "banana", "beer", "bread", "carrots", "cheddar cheese", "chicen breast", "chili with beans", "chocolate chip cookie", "coffee", "cola", "corn", "egg", "graham cracker", "granola bar", "green beans", "ground beef patty", "hot dog", "ice cream", "jelly doughnut", "ketchup", "milk", "mixed nuts", "mustard", "oatmeal", "orange juice", "peanut butter", "pizza", "pork chop", "potato", "potato chips", "pretzels", "raisins", "ranch salad dressing", "red wine", "rice", "salsa", "shrimp", "spaghetti", "spaghetti sauce", "tuna", "white wine", "yellow cake"]
         
         
+        //starts listening for any notificaatiosn from the project
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "usdaItemDidComplete:", name: kUSDAItemCompleted, object: nil)
+        
     }
     
     
@@ -417,8 +420,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     
+    //NSNotificationCenter
     
     
+    func usdaItemDidComplete(notification : NSNotification) {
+        println("usdaItemDidComplete in ViewController")
+        self.requestFavouritedUSDAItems()
+        let selectedScopeButtonIndex = self.searchController.searchBar.selectedScopeButtonIndex
+        if selectedScopeButtonIndex == 2 {
+            self.tableView.reloadData()
+        }
+    }
     
     
     
